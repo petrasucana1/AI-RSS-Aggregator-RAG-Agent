@@ -1,0 +1,472 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe60f39a-1ff5-4405-9f0f-4808c1e4410a",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "b8f3a32a-eb0a-4542-aa67-380a081d6401",
+              "name": "creator",
+              "type": "string",
+              "value": "={{ $json.creator }}"
+            },
+            {
+              "id": "270a0b42-a2cd-489d-8cef-48da5113ab75",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "1a1efa19-ee2c-4b71-9640-84bc8d20b31a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "eaea5576-eead-49cb-8063-b4cf4b37d79a",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "0ab09b1a-a7df-42b2-8a6f-854dd2889583",
+              "name": "categories",
+              "value": "={{ $json.categories }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a867162-ad4a-4565-a323-b885d49cb317",
+      "name": "Select RSS Fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        512,
+        368
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "url": "https://deepmind.google/blog/rss.xml",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "a040cc98-530f-4b86-93f2-4f5189511c56",
+      "name": "RSS Read - ai-techpark",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        0,
+        16
+      ],
+      "typeVersion": 1.2,
+      "notes": "Get news from this source via RSS."
+    },
+    {
+      "parameters": {
+        "url": "https://knowtechie.com/category/ai/feed/",
+        "options": {}
+      },
+      "id": "b1561810-92ed-47b4-b30c-0067d00057d5",
+      "name": "RSS Read - knowtechie",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        0,
+        192
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "https://aibusiness.com/rss.xml",
+        "options": {}
+      },
+      "id": "47ef7f4b-ecc9-4e31-b12b-9d65e7bd758b",
+      "name": "RSS Read - aibusiness",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        0,
+        384
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.theguardian.com/technology/artificialintelligenceai/rss",
+        "options": {}
+      },
+      "id": "be52953b-0cea-4083-89f1-77e891942b2a",
+      "name": "RSS Read - theguardian",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        0,
+        560
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "id": "9fc5033f-e039-4b60-a248-dd01d074e45a",
+      "name": "Merge RSS Feeds",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        304,
+        320
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        384
+      ],
+      "id": "b7aea4dd-98f5-45b2-9007-e449c66f5b48",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://news.ycombinator.com/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        736
+      ],
+      "id": "67ec4f58-3484-4d1e-a1c1-eb6172e06f3d",
+      "name": "RSS Read - ycombinator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        960
+      ],
+      "id": "a76be8c2-dc90-4339-b0b5-f99ace6210bb",
+      "name": "Ollama Model1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOpenHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        960
+      ],
+      "id": "f3e56b07-784e-4e2a-a6f4-49baa15d9358",
+      "name": "Hugging Face Inference Model"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e9008b5f-8f75-4bef-b002-342a914807ee",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.categories }}\n",
+              "rightValue": "AI"
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "f1535e93-fce5-43e3-b0c5-e9976816bedd",
+      "name": "Filter AI Articles",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        752,
+        368
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOpenHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        960
+      ],
+      "id": "ea176d47-054a-4c69-b9b0-93ec3d6fc70b",
+      "name": "Hugging Face Inference Model1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Choose 5 most relevant AI-related articles:\nGive only the result in this format:\nTitle:{{ $json.title }}  \nAuthor:{{ $json.creator }}  \nLink:{{ $json.link }}  \nArticle text:  \n{{ $json.content }}",
+        "batching": {}
+      },
+      "id": "d0676a95-f4dc-44b5-9031-82cd59a5ba29",
+      "name": "Relevant articles",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1248,
+        368
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "gpt-4"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        560
+      ],
+      "id": "9958ea1f-5ba1-4f64-aad9-9f2d039c22cb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "yzhvg68IdO822akv",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let allItems = $input.all();\nlet parsedArticles = [];\n\nfor (let item of allItems) {\n    let text = item.json.text;\n    if (!text) continue;\n\n    text = text.trim();\n\n    let rawArticles = text.split(/\\n\\s*Title:/).map((t, i) => i === 0 ? t : \"Title:\" + t);\n\n    for (let raw of rawArticles) {\n        if (!raw.trim()) continue;\n\n        let titleMatch = raw.match(/Title:\\s*(.*?)(\\n|$)/);\n        let authorMatch = raw.match(/Author:\\s*(.*?)(\\n|$)/);\n        let linkMatch = raw.match(/Link:\\s*(.*?)(\\n|$)/);\n        let textMatch = raw.match(/Article text:\\s*([\\s\\S]*?)(?=$|\\nTitle:)/);\n\n        parsedArticles.push({\n            json: {\n                title: titleMatch ? titleMatch[1].trim() : \"\",\n                author: authorMatch ? authorMatch[1].trim() : \"\",\n                link: linkMatch ? linkMatch[1].trim() : \"\",\n                text: textMatch ? textMatch[1].trim() : \"\"\n            }\n        });\n    }\n}\n\nreturn parsedArticles;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        368
+      ],
+      "id": "f3bd68a9-e15c-44f6-b425-9c91ecaf19b9",
+      "name": "Format Message"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        976,
+        368
+      ],
+      "id": "11751c42-9961-49b6-99b0-ff65bda11799",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {
+    "Relevant articles": [
+      {
+        "json": {
+          "text": "Title: Artificial intelligence — The revolution hasn’t happened yet\nAuthor: Michael Jordan\nLink: https://hbr.org/2018/07/artificial-intelligence-the-revolution-hasnt-happened-yet\nArticle text: According to the author, instead of focusing on a future where AI rule the planet, we should focus more on the way this technology can affect businesses today. Jordan writes that AI will revolutionize many fields, but it will not be the kind of revolution many people are expecting.\n\nTitle: How AI is transforming healthcare\nAuthor: Kaveh Safavi\nLink: https://www.forbes.com/sites/insights-intelai/2020/01/29/how-ai-is-transforming-healthcare/\nArticle text: The article discusses how artificial intelligence applications improve the access, affordability, and effectiveness of health care services. Data analytics and machine learning are used to identify patterns in massive amounts of health data, helping clinicians make better decisions.\n\nTitle: Preparing for the Future of Artificial Intelligence\nAuthor: Edward Felten and Terah Lyons\nLink: https://obamawhitehouse.archives.gov/blog/2016/05/03/preparing-future-artificial-intelligence\nArticle text: The authors cover the Obama Administration’s approach to AI in 2016, mapping out the potential benefits and ethical considerations. It sets out plans for public engagement, deliberate investment, and preparing the workforce for the opportunities and challenges AI will bring.\n\nTitle: The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation\nAuthor: Brundage, Avin, Clark, Toner et al.\nLink: https://arxiv.org/pdf/1802.07228.pdf\nArticle text: The document addresses malicious uses of AI and suggests how negative impacts may be prevented. The authors note that AI technologies might be used to exacerbate security threats and propose preventative strategies accordingly.\n\nTitle: AI and Machine Learning in Cybersecurity: What’s the Real Impact?\nAuthor: \nLink: https://securityintelligence.com/articles/ai-and-ml-in-cybersecurity-whats-the-real-impact/\nArticle text: This article breaks down how cybersecurity utilizes AI and machine learning to predict, identify and neutralize threats. It offers a balanced view, discussing both the benefits and potential limitations of these technologies in cybersecurity."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Merge RSS Feeds": {
+      "main": [
+        [
+          {
+            "node": "Select RSS Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select RSS Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter AI Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read - aibusiness": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Feeds",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS Read - knowtechie": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Feeds",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS Read - ai-techpark": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read - theguardian": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Feeds",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read - knowtechie",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read - aibusiness",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read - theguardian",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read - ycombinator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read - ai-techpark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read - ycombinator": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Feeds",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Filter AI Articles": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relevant articles": {
+      "main": [
+        [
+          {
+            "node": "Format Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Relevant articles",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Relevant articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ba01c15a-e50d-428e-a2e2-00900a0f5148",
+  "meta": {
+    "instanceId": "2d4f46fedc20ac2a38d1b9cd49d41b809b4ba3416e0567daaf33f79330a10389"
+  },
+  "id": "1roVPjGMaBzT0no2",
+  "tags": []
+}
